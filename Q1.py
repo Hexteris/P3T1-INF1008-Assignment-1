@@ -103,27 +103,87 @@ class ModifiedLinkedList:
 
     #O(1)
     def delete(self, position):
-        if position-1 < 0 or position-1 > len(self.array):
+        if position-1 < 0 or position > len(self.array):
             print("Position out of bounds")
+        elif position == 0:
+            self.head == self.head.next
+            self.array.pop(position)
         else:
-            targetNode = self.array[position-2]
+            targetNode = self.array[position-1]
             targetNode.next = targetNode.next.next
-            self.array.pop(position-1)
+            self.array.pop(position)
 
     def printAll(self):
-        if self.head != None:
             currNode = self.head
-            while currNode.next != None:
-                print(currNode.data)
+            while currNode:
+                print(currNode.data, end=" -> " if currNode.next else "")
                 currNode = currNode.next
-            print(currNode.data)
+            print()
 
-testList = ModifiedLinkedList()
-testList.append("A")
-testList.append("B")
-testList.append("C")
-testList.append("D")
-testList.insert(1,"x")
-testList.insert(3,"y")
-testList.delete(3)
-testList.printAll()
+if __name__ == "__main__":
+    def testcase1():
+        print("=== Test Case 1: GET ===")
+        testList = ModifiedLinkedList()
+        testList.append("A")
+        testList.append("B")
+        testList.append("C")
+        testList.append("D")
+        print("List contents:", end="")
+        testList.printAll()
+
+        # Test getting valid positions
+        print(f"Get position 1: {testList.get(1)}") 
+        print(f"Get position 3: {testList.get(3)}")  
+        print(f"Get position 4: {testList.get(4)}")  
+        
+        # Test getting invalid positions
+        print(f"Get position 0: {testList.get(0)}")  
+        print(f"Get position 10: {testList.get(10)}") 
+
+    def testcase2():
+        print("=== Test Case 2: INSERT ===")
+        testList = ModifiedLinkedList()
+        testList.append("A")
+        testList.append("B")
+        testList.append("C")
+        testList.append("D")
+        print("List contents:", end="")
+        testList.printAll()
+
+        #Insert at beginning
+        testList.insert(1, "X")
+        print("Insert 'X' at position 1:")
+        testList.printAll()
+        
+        # Insert in middle
+        testList.insert(3, "Y")
+        print("Insert 'Y' at position 3:")
+        testList.printAll()
+        
+        # Insert at end
+        testList.insert(6, "Z")
+        print("Insert 'Z' at position 6:")
+        testList.printAll()
+
+    def testcase3():
+        print("=== Test Case 3: DELETE ===")
+        testList = ModifiedLinkedList()
+        testList.append("A")
+        testList.append("B")
+        testList.append("C")
+        testList.append("D")
+        testList.append("E")
+        print("List contents:", end="")
+        testList.printAll()
+
+        testList.delete(1)
+        print("Delete position 1:")
+        testList.printAll()
+
+        testList.delete(3)
+        print("Delete position 3:")
+        testList.printAll()
+        
+testcase1()
+testcase2()
+testcase3()
