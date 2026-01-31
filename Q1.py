@@ -1,3 +1,5 @@
+import time
+
 class Node:
     def __init__(self, data):
         self.data = data
@@ -6,37 +8,41 @@ class Node:
 class LinkedList:
     def __init__(self):
         self.head = None
+        self.tail = None
 
+    #for testing 
     def append(self, value):
-        newNode = Node(value)
-        if self.head == None:
-            self.head = newNode
-        else:
-            currNode = self.head
-            while currNode.next != None:
-                currNode = currNode.next
-            currNode.next = newNode
+            newNode = Node(value)
+            if self.head is None:
+                self.head = self.tail = newNode
+            else:
+                self.tail.next = newNode
+                self.tail = newNode
 
     #Worst case: O(n)
     def get(self, position):
         currNode = self.head
-        for i in range(position-1):
+        for i in range(position):
             currNode = currNode.next
         return currNode.data
 
     #Worst case: O(n)
     def insert(self, position, value):
         newNode = Node(value)
+        start_time = time.process_time()
         currNode = self.head
-        for i in range(position - 2):
+        for i in range(position):
             currNode = currNode.next
         newNode.next = currNode.next
         currNode.next = newNode
+        end_time = time.process_time()
+        time_taken = end_time-start_time
+        return time_taken
 
     #Worst case: O(n)
     def delete(self, position):
         currNode = self.head
-        for i in range(position-2):
+        for i in range(position):
             currNode = currNode.next
         currNode.next = currNode.next.next
 
@@ -47,66 +53,95 @@ class LinkedList:
                 print(currNode.data)
                 currNode = currNode.next
             print(currNode.data)
-"""
-testList = LinkedList()
-testList.append("A")
-testList.append("B")
-testList.append("C")
-testList.append("D")
-testList.insert(3,"x")
-testList.insert(3,"y")
-testList.insert(5,"z")
-testList.delete(3)
-testList.printAll()
-print()
-print(testList.get(5))
-"""
 
 
 class ModifiedLinkedList:
     def __init__(self):
         self.head = None
+        self.tail = None
         self.array = []
 
+    #for testing
     def append(self, value):
         newNode = Node(value)
-        if self.head == None:
-            self.head = newNode
+        if self.head is None:
+            self.head = self.tail = newNode
         else:
-            currNode = self.head
-            while currNode.next != None:
-                currNode = currNode.next
-            currNode.next = newNode
+            self.tail.next = newNode
+            self.tail = newNode
         self.array.append(newNode)
+
+
+
+
+
+
+
+
 
     #O(1)
     def get(self, position):
-        if position-1 < 0 or position-1 > len(self.array):
+        if position < 0 or position > len(self.array):
             print("Position out of bounds")
         else:
-            return self.array[position-1].data
+            return self.array[position].data
 
-    #O(1)
+
     def insert(self, position, value):
+        #time taken for node to be added to linked list
+        initial_time_taken = 0 
+        #total time taken for node to be added and array to be updated
+        actual_time_taken = 0 
+        #Create new node
         newNode = Node(value)
-        if position-1 < 0 or position-1 > len(self.array):
+
+        #starts timer after node is created
+        start_time = time.process_time() 
+
+        #Index out of bounds
+        if position < 0 or position > len(self.array):
             print("Position out of bounds")
-        elif position == 1:
+
+        #Insert to front of list
+        elif position == 0:
+            
+            #new node -> current head
             newNode.next = self.array[0]
+            #update head 
             self.head= newNode
+
+            #adds new node into auxiliary array
             self.array.insert(0, newNode)
+
         else:
-            prevNode = self.array[position-2]
+            #jump to prev node in O(1)
+            prevNode = self.array[position-1]
+            #new node -> next node
             newNode.next = prevNode.next
+            #prev node -> new node -> next node
             prevNode.next = newNode
-            self.array.insert(position-1, newNode)
+
+            #Calculate time taken for node to be added to linked list
+            end_time = time.process_time()
+            initial_time_taken = end_time-start_time
+
+
+            #adds new node into auxiliary array
+            self.array.insert(position, newNode)
+
+        #Calculate time taken for node to be added to linked list AND array
+        end_time = time.process_time()
+        actual_time_taken = end_time-start_time
+
+        return initial_time_taken, actual_time_taken
+
 
     #O(1)
     def delete(self, position):
-        if position-1 < 0 or position > len(self.array):
+        if position < 0 or position > len(self.array):
             print("Position out of bounds")
         elif position == 0:
-            self.head == self.head.next
+            self.head = self.head.next
             self.array.pop(position)
         else:
             targetNode = self.array[position-1]
@@ -132,13 +167,13 @@ if __name__ == "__main__":
         testList.printAll()
 
         # Test getting valid positions
-        print(f"Get position 1: {testList.get(1)}") 
-        print(f"Get position 3: {testList.get(3)}")  
-        print(f"Get position 4: {testList.get(4)}")  
+        print(f"Get index 0: {testList.get(0)}") 
+        print(f"Get index 2: {testList.get(2)}")  
+        print(f"Get index 3: {testList.get(3)}")  
         
         # Test getting invalid positions
-        print(f"Get position 0: {testList.get(0)}")  
-        print(f"Get position 10: {testList.get(10)}") 
+        print(f"Get index -1: {testList.get(-1)}")  
+        print(f"Get index 10: {testList.get(10)}") 
 
     def testcase2():
         print("=== Test Case 2: INSERT ===")
@@ -151,18 +186,18 @@ if __name__ == "__main__":
         testList.printAll()
 
         #Insert at beginning
-        testList.insert(1, "X")
-        print("Insert 'X' at position 1:")
+        testList.insert(0, "X")
+        print("Insert 'X' at index 0:")
         testList.printAll()
         
         # Insert in middle
-        testList.insert(3, "Y")
-        print("Insert 'Y' at position 3:")
+        testList.insert(2, "Y")
+        print("Insert 'Y' at index 2:")
         testList.printAll()
         
         # Insert at end
-        testList.insert(6, "Z")
-        print("Insert 'Z' at position 6:")
+        testList.insert(5, "Z")
+        print("Insert 'Z' at index 5:")
         testList.printAll()
 
     def testcase3():
@@ -176,14 +211,47 @@ if __name__ == "__main__":
         print("List contents:", end="")
         testList.printAll()
 
-        testList.delete(1)
-        print("Delete position 1:")
+        testList.delete(0)
+        print("Delete index 0:")
         testList.printAll()
 
-        testList.delete(3)
-        print("Delete position 3:")
+        testList.delete(2)
+        print("Delete index 2:")
         testList.printAll()
+
+    def testcase4():
+        print("=== Test Case 4 ===")
+        print("Testing with 100000 records")   
+        noOfTestCase = 1000000
+        oldList = LinkedList()
+        modifiedList = ModifiedLinkedList()
+
+        print("generating records...")
+        for i in range(noOfTestCase):
+            oldList.append(Node(i))
+            modifiedList.append(Node(i))
+
+        print("calculating insert time for regular linked list...")
+        old_timetaken = oldList.insert(int(noOfTestCase * 0.8), "x")
+        print("calculating insert time for hybrid linked list...")
+        initial_timetaken, actual_timetaken = modifiedList.insert(int(noOfTestCase * 0.8), "x")
+
+        print("\n" + "="*70)
+        print("                    PERFORMANCE COMPARISON RESULTS")
+        print("="*70)
+        print(f"{'Operation':<25} {'Time (s)':<12} {'Speedup vs Regular':<18}")
+        print("-"*70)
+        
+        print(f"{'Regular LL insert':<25} {old_timetaken:<18.6f} {'1.00x':<18}")
+        print(f"{'Hybrid LL only':<25} {initial_timetaken:<18.6f} {old_timetaken/initial_timetaken:.0f}x")
+        print(f"{'Hybrid Total':<25} {actual_timetaken:<18.6f} {old_timetaken/actual_timetaken:.0f}x")
+        
+        print("-"*70)
+        overall_speedup = old_timetaken/actual_timetaken
+        print(f"{'OVERALL SPEEDUP':<44} {overall_speedup:.0f}x")
+        print("="*70 + "\n")
         
 testcase1()
 testcase2()
 testcase3()
+testcase4()
