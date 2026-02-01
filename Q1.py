@@ -21,10 +21,13 @@ class LinkedList:
 
     #Worst case: O(n)
     def get(self, position):
+        start_time = time.process_time()
         currNode = self.head
         for i in range(position):
             currNode = currNode.next
-        return currNode.data
+        end_time = time.process_time()
+        timeTaken = end_time-start_time
+        return currNode.data, timeTaken
 
     #Worst case: O(n)
     def insert(self, position, value):
@@ -36,15 +39,19 @@ class LinkedList:
         newNode.next = currNode.next
         currNode.next = newNode
         end_time = time.process_time()
-        time_taken = end_time-start_time
-        return time_taken
+        timeTaken = end_time-start_time
+        return timeTaken
 
     #Worst case: O(n)
     def delete(self, position):
+        start_time = time.process_time()
         currNode = self.head
         for i in range(position):
             currNode = currNode.next
         currNode.next = currNode.next.next
+        end_time = time.process_time()
+        timeTaken = end_time-start_time
+        return timeTaken
 
     def printAll(self):
         if self.head != None:
@@ -54,6 +61,10 @@ class LinkedList:
                 currNode = currNode.next
             print(currNode.data)
 
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
 
 class ModifiedLinkedList:
     def __init__(self):
@@ -61,7 +72,7 @@ class ModifiedLinkedList:
         self.tail = None
         self.array = []
 
-    #for testing
+    #Append values for testing
     def append(self, value):
         newNode = Node(value)
         if self.head is None:
@@ -71,27 +82,22 @@ class ModifiedLinkedList:
             self.tail = newNode
         self.array.append(newNode)
 
-
-
-
-
-
-
-
-
     #O(1)
     def get(self, position):
+        start_time = time.process_time()
         if position < 0 or position > len(self.array):
             print("Position out of bounds")
         else:
-            return self.array[position].data
+            end_time = time.process_time()
+            timeTaken = end_time-start_time
+            return self.array[position].data, timeTaken
 
 
     def insert(self, position, value):
         #time taken for node to be added to linked list
-        initial_time_taken = 0 
+        timeTaken = 0 
         #total time taken for node to be added and array to be updated
-        actual_time_taken = 0 
+        totalTimeTaken = 0 
         #Create new node
         newNode = Node(value)
 
@@ -123,7 +129,7 @@ class ModifiedLinkedList:
 
             #Calculate time taken for node to be added to linked list
             end_time = time.process_time()
-            initial_time_taken = end_time-start_time
+            timeTaken = end_time-start_time
 
 
             #adds new node into auxiliary array
@@ -131,9 +137,9 @@ class ModifiedLinkedList:
 
         #Calculate time taken for node to be added to linked list AND array
         end_time = time.process_time()
-        actual_time_taken = end_time-start_time
+        totalTimeTaken = end_time-start_time
 
-        return initial_time_taken, actual_time_taken
+        return timeTaken, totalTimeTaken
 
 
     #O(1)
@@ -144,9 +150,27 @@ class ModifiedLinkedList:
             self.head = self.head.next
             self.array.pop(position)
         else:
+            #time taken for node to be removed from linked list
+            timeTaken = 0 
+            #total time taken for node to be removed from LL and array
+            totalTimeTaken = 0 
+
+            #starts timer after node is created
+            start_time = time.process_time() 
+
             targetNode = self.array[position-1]
             targetNode.next = targetNode.next.next
+
+            #Calculate time taken for node to be removed from linked list
+            end_time = time.process_time()
+            timeTaken = end_time-start_time
+
             self.array.pop(position)
+            #Calculate time taken for node to be added to linked list AND array
+            end_time = time.process_time()
+            totalTimeTaken = end_time-start_time
+
+            return timeTaken, totalTimeTaken
 
     def printAll(self):
             currNode = self.head
@@ -157,7 +181,7 @@ class ModifiedLinkedList:
 
 if __name__ == "__main__":
     def testcase1():
-        print("=== Test Case 1: GET ===")
+        print("\n=== Test Case 1: GET ===")
         testList = ModifiedLinkedList()
         testList.append("A")
         testList.append("B")
@@ -167,16 +191,16 @@ if __name__ == "__main__":
         testList.printAll()
 
         # Test getting valid positions
-        print(f"Get index 0: {testList.get(0)}") 
-        print(f"Get index 2: {testList.get(2)}")  
-        print(f"Get index 3: {testList.get(3)}")  
+        print(f"Get index 0: {testList.get(0)[0]}")
+        print(f"Get index 2: {testList.get(2)[0]}")  
+        print(f"Get index 3: {testList.get(3)[0]}")  
         
         # Test getting invalid positions
         print(f"Get index -1: {testList.get(-1)}")  
         print(f"Get index 10: {testList.get(10)}") 
 
     def testcase2():
-        print("=== Test Case 2: INSERT ===")
+        print("\n=== Test Case 2: INSERT ===")
         testList = ModifiedLinkedList()
         testList.append("A")
         testList.append("B")
@@ -201,7 +225,7 @@ if __name__ == "__main__":
         testList.printAll()
 
     def testcase3():
-        print("=== Test Case 3: DELETE ===")
+        print("\n=== Test Case 3: DELETE ===")
         testList = ModifiedLinkedList()
         testList.append("A")
         testList.append("B")
@@ -220,35 +244,67 @@ if __name__ == "__main__":
         testList.printAll()
 
     def testcase4():
-        print("=== Test Case 4 ===")
-        print("Testing with 100000 records")   
+        print("\n=== Test Case 4: Performance Comparison ===")
+        print("Testing with 1000000 records")   
         noOfTestCase = 1000000
         oldList = LinkedList()
         modifiedList = ModifiedLinkedList()
 
-        print("generating records...")
+        print("Generating records...")
         for i in range(noOfTestCase):
             oldList.append(Node(i))
             modifiedList.append(Node(i))
 
-        print("calculating insert time for regular linked list...")
-        old_timetaken = oldList.insert(int(noOfTestCase * 0.8), "x")
-        print("calculating insert time for hybrid linked list...")
-        initial_timetaken, actual_timetaken = modifiedList.insert(int(noOfTestCase * 0.8), "x")
+        print("calculating operation time for regular linked list...")
+        regularTime = oldList.insert(int(noOfTestCase * 0.8), "x")
+        print("calculating operation time for hybrid linked list...")
+        hybridTime, totalHybridTime = modifiedList.insert(int(noOfTestCase * 0.8), "x")
 
         print("\n" + "="*70)
         print("                    PERFORMANCE COMPARISON RESULTS")
         print("="*70)
-        print(f"{'Operation':<25} {'Time (s)':<12} {'Speedup vs Regular':<18}")
+        print(f"{'INSERT Operation':<25} {'Time (s)':<12} {'Speedup vs Regular':<18}")
         print("-"*70)
         
-        print(f"{'Regular LL insert':<25} {old_timetaken:<18.6f} {'1.00x':<18}")
-        print(f"{'Hybrid LL only':<25} {initial_timetaken:<18.6f} {old_timetaken/initial_timetaken:.0f}x")
-        print(f"{'Hybrid Total':<25} {actual_timetaken:<18.6f} {old_timetaken/actual_timetaken:.0f}x")
+        print(f"{'Regular LL INSERT':<25} {regularTime:<18.6f} {'1.00x':<18}")
+        print(f"{'Hybrid LL Only':<25} {hybridTime:<18.6f} {regularTime/hybridTime:.0f}x")
+        print(f"{'Hybrid Total':<25} {totalHybridTime:<18.6f} {regularTime/totalHybridTime:.0f}x")
         
         print("-"*70)
-        overall_speedup = old_timetaken/actual_timetaken
-        print(f"{'OVERALL SPEEDUP':<44} {overall_speedup:.0f}x")
+        overall_speedup = regularTime/totalHybridTime
+        print(f"{'OVERALL INSERT SPEEDUP':<44} {overall_speedup:.0f}x")
+        print("="*70 + "\n")
+
+
+        regularTime = oldList.delete(int(noOfTestCase * 0.8))
+        hybridTime, totalHybridTime = modifiedList.delete(int(noOfTestCase * 0.8))
+
+
+        print(f"{'DELETE Operation':<25} {'Time (s)':<12} {'Speedup vs Regular':<18}")
+        print("-"*70)
+        
+        print(f"{'Regular LL DELETE':<25} {regularTime:<18.6f} {'1.00x':<18}")
+        print(f"{'Hybrid LL Only':<25} {hybridTime:<18.6f} {regularTime/hybridTime:.0f}x")
+        print(f"{'Hybrid Total':<25} {totalHybridTime:<18.6f} {regularTime/totalHybridTime:.0f}x")
+        
+        print("-"*70)
+        overall_speedup = regularTime/totalHybridTime
+        print(f"{'OVERALL DELETE SPEEDUP':<44} {overall_speedup:.0f}x")
+        print("="*70 + "\n")
+
+        regularTime = oldList.get(int(noOfTestCase * 0.8))
+        totalHybridTime = modifiedList.get(int(noOfTestCase * 0.8))
+
+
+        print(f"{'GET Operation':<25} {'Time (s)':<12} {'Speedup vs Regular':<18}")
+        print("-"*70)
+        
+        print(f"{'Regular LL GET':<25} {regularTime[1]:<18.6f} {'1.00x':<18}")
+        print(f"{'Hybrid GET':<25} {totalHybridTime[1]:<18.6f} {regularTime[1]/totalHybridTime[1]:.0f}x")
+        
+        print("-"*70)
+        overall_speedup = regularTime[1]/totalHybridTime[1]
+        print(f"{'OVERALL GET SPEEDUP':<44} {overall_speedup:.0f}x")
         print("="*70 + "\n")
         
 testcase1()
