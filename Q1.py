@@ -23,35 +23,35 @@ class LinkedList:
 
     #Worst case: O(n)
     def get(self, position):
-        start_time = time.process_time()
+        start_time = time.perf_counter()
         currNode = self.head
         for i in range(position):
             currNode = currNode.next
-        end_time = time.process_time()
+        end_time = time.perf_counter()
         timeTaken = end_time-start_time
         return currNode.data, timeTaken
 
     #Worst case: O(n)
     def insert(self, position, value):
         newNode = Node(value)
-        start_time = time.process_time()
+        start_time = time.perf_counter()
         currNode = self.head
         for i in range(position):
             currNode = currNode.next
         newNode.next = currNode.next
         currNode.next = newNode
-        end_time = time.process_time()
+        end_time = time.perf_counter()
         timeTaken = end_time-start_time
         return timeTaken
 
     #Worst case: O(n)
     def delete(self, position):
-        start_time = time.process_time()
+        start_time = time.perf_counter()
         currNode = self.head
         for i in range(position):
             currNode = currNode.next
         currNode.next = currNode.next.next
-        end_time = time.process_time()
+        end_time = time.perf_counter()
         timeTaken = end_time-start_time
         return timeTaken
 
@@ -84,11 +84,11 @@ class ModifiedLinkedList:
 
     #O(1)
     def get(self, position):
-        start_time = time.process_time()
+        start_time = time.perf_counter()
         if position < 0 or position > len(self.array):
             print("Position out of bounds")
         else:
-            end_time = time.process_time()
+            end_time = time.perf_counter()
             timeTaken = end_time-start_time
             return self.array[position].data, timeTaken
 
@@ -102,7 +102,7 @@ class ModifiedLinkedList:
         newNode = Node(value)
 
         #starts timer after node is created
-        start_time = time.process_time() 
+        start_time = time.perf_counter()
 
         #Index out of bounds
         if position < 0 or position > len(self.array):
@@ -128,7 +128,7 @@ class ModifiedLinkedList:
             prevNode.next = newNode
 
             #Calculate time taken for node to be added to linked list
-            end_time = time.process_time()
+            end_time = time.perf_counter()
             timeTaken = end_time-start_time
 
 
@@ -136,7 +136,7 @@ class ModifiedLinkedList:
             self.array.insert(position, newNode)
 
         #Calculate time taken for node to be added to linked list AND array
-        end_time = time.process_time()
+        end_time = time.perf_counter()
         totalTimeTaken = end_time-start_time
 
         return timeTaken, totalTimeTaken
@@ -156,18 +156,18 @@ class ModifiedLinkedList:
             totalTimeTaken = 0 
 
             #starts timer after node is created
-            start_time = time.process_time() 
+            start_time = time.perf_counter()
 
             targetNode = self.array[position-1]
             targetNode.next = targetNode.next.next
 
             #Calculate time taken for node to be removed from linked list
-            end_time = time.process_time()
+            end_time = time.perf_counter()
             timeTaken = end_time-start_time
 
             self.array.pop(position)
             #Calculate time taken for node to be added to linked list AND array
-            end_time = time.process_time()
+            end_time = time.perf_counter()
             totalTimeTaken = end_time-start_time
 
             return timeTaken, totalTimeTaken
