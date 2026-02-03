@@ -1,8 +1,3 @@
-"""
-Graph 2-Coloring Problem - O(2^n) Exponential Algorithm
-Demonstrates exponential time complexity through exhaustive backtracking.
-"""
-
 from typing import List, Tuple
 import time
 import sys
@@ -41,11 +36,7 @@ class Graph2ColoringSolver:
         return self.solutions
     
     def _backtrack(self, vertex: int, coloring: List[int]) -> None:
-        """
-        Binary decision tree: each vertex colored 0 or 1.
-        
-        Creates 2 branches per vertex → 2^n total calls.
-        """
+   
         self.call_count += 1
         
         # Base: all vertices colored
@@ -65,7 +56,6 @@ class Graph2ColoringSolver:
         coloring[vertex] = -1
     
     def _is_valid(self, coloring: List[int]) -> bool:
-        """Check no adjacent vertices have same color."""
         for u in range(self.num_vertices):
             for v in self.adj_list[u]:
                 if coloring[u] == coloring[v]:

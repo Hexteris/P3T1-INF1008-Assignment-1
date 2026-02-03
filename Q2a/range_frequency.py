@@ -171,45 +171,49 @@ def test_range_frequency():
 
 def main():
     """Main function for standalone execution."""
-    print("Range Frequency Query - O(n log n) Algorithm")
-    print("=" * 50)
+    try:                                   
+        print("Range Frequency Query - O(n log n) Algorithm")
+        print("=" * 50)
+        
+        # Interactive mode or test mode
+        if len(sys.argv) > 1 and sys.argv[1] == "--test":
+            test_range_frequency()
+            return
+        
+        print("Enter array elements (space-separated integers):")
+        arr_input = input().strip()
+        if not arr_input:
+            print("Running test suite...")
+            test_range_frequency()
+            return
+        
+        arr = list(map(int, arr_input.split()))
+        rfq = RangeFrequencyQuery(arr)
+        
+        print(f"\nArray of size {len(arr)} preprocessed in O(n log n) time.")
+        print("Enter queries as 'left right value' (one per line, empty to finish):")
+        
+        results = []
+        while True:
+            query_input = input().strip()
+            if not query_input:
+                break
+            try:
+                left, right, value = map(int, query_input.split())
+                if left < 0 or right >= len(arr) or left > right:
+                    print("Error: Invalid range")
+                    continue
+                result = rfq.query(left, right, value)
+                results.append(result)
+                print(f"  Result: {result}")
+            except ValueError:
+                print("Error: Invalid input format")
+        
+        if results:
+            print(f"\nAll results: {results}")
     
-    # Interactive mode or test mode
-    if len(sys.argv) > 1 and sys.argv[1] == "--test":
-        test_range_frequency()
-        return
+    except KeyboardInterrupt:               
+        return  
     
-    print("Enter array elements (space-separated integers):")
-    arr_input = input().strip()
-    if not arr_input:
-        print("Running test suite...")
-        test_range_frequency()
-        return
-    
-    arr = list(map(int, arr_input.split()))
-    rfq = RangeFrequencyQuery(arr)
-    
-    print(f"\nArray of size {len(arr)} preprocessed in O(n log n) time.")
-    print("Enter queries as 'left right value' (one per line, empty to finish):")
-    
-    results = []
-    while True:
-        query_input = input().strip()
-        if not query_input:
-            break
-        try:
-            left, right, value = map(int, query_input.split())
-            if left < 0 or right >= len(arr) or left > right:
-                print("Error: Invalid range")
-                continue
-            result = rfq.query(left, right, value)
-            results.append(result)
-            print(f"  Result: {result}")
-        except ValueError:
-            print("Error: Invalid input format")
-    
-    if results:
-        print(f"\nAll results: {results}")
-
 if __name__ == "__main__":
     main()
